@@ -1,8 +1,11 @@
 use crate::store::Store;
 use crate::Error;
-use demostf_client::{ApiClient, Demo};
+use demostf_client::{ApiClient, Demo, ListOrder, ListParams};
 use std::fmt::{Debug, Formatter};
 use std::io::Write;
+use std::time::Duration;
+use time::OffsetDateTime;
+use tokio::time::timeout;
 use tracing::{instrument, warn};
 
 pub struct Migrator {
@@ -30,6 +33,30 @@ impl Migrator {
             backend,
             key,
         }
+    }
+
+    pub async fn migrate_till(
+        &self,
+        from_backend: &str,
+        time: OffsetDateTime,
+    ) -> Result<(), Error> {
+        let demos = self
+            .client
+            .list(
+                ListParams::default()
+                    .with_order(ListOrder::Ascending)
+                    .with_backend(from_backend)
+                    .with_before(time),
+                1,
+            )
+            .await?;
+
+        for demo in demos {
+            assert!(demo.time < time);
+            self.migrate(&demo).await?;
+        }
+
+        Ok(())
     }
 
     #[instrument(skip(demo), fields(demo.id = demo.id))]
@@ -63,7 +90,13 @@ impl Migrator {
     #[instrument(skip(demo), fields(demo.id = demo.id, demo.name = name))]
     async fn re_download(&self, name: &str, demo: &Demo) -> Result<(), Error> {
         let mut data = Vec::with_capacity(demo.duration as usize / 60 * 1024);
-        demo.save(&self.client, &mut data).await?;
+
+        timeout(
+            Duration::from_secs(5 * 60),
+            demo.save(&self.client, &mut data),
+        )
+        .await
+        .map_err(|_| Error::Timeout)??;
 
         self.store.remove(name)?;
         let mut file = self.store.create(name).await?;

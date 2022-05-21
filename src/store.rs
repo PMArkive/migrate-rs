@@ -30,10 +30,6 @@ impl Store {
         Ok(file)
     }
 
-    pub fn exists(&self, name: &str) -> bool {
-        self.generate_path(name).is_file()
-    }
-
     pub fn remove(&self, name: &str) -> std::io::Result<()> {
         fs::remove_file(self.generate_path(name))
     }
