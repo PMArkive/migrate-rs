@@ -47,6 +47,12 @@ in {
       description = "user that owns the local demos";
     };
 
+    log = mkOption {
+      type = types.str;
+      default = "info";
+      description = "log level";
+    };
+
     package = mkOption {
       type = types.package;
       defaultText = literalExpression "pkgs.demostf-migrate";
@@ -63,6 +69,7 @@ in {
         STORAGE_ROOT = cfg.storageRoot;
         BACKEND = cfg.backend;
         AGE = toString cfg.age;
+        RUST_LOG = cfg.log;
       };
 
       serviceConfig = {

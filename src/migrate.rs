@@ -6,7 +6,7 @@ use std::io::Write;
 use std::time::Duration;
 use time::OffsetDateTime;
 use tokio::time::timeout;
-use tracing::{instrument, warn};
+use tracing::{info, instrument, warn};
 
 pub struct Migrator {
     store: Store,
@@ -72,6 +72,8 @@ impl Migrator {
             );
             self.re_download(name, demo).await?;
         }
+
+        info!("updating demo link");
 
         self.client
             .set_url(
