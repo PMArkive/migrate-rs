@@ -77,7 +77,7 @@ impl Migrator {
             .set_url(
                 demo.id,
                 &self.backend,
-                &self.store.generate_path(name).to_str().unwrap(),
+                self.store.generate_path(name).to_str().unwrap(),
                 &self.store.generate_url(name),
                 stored_hash,
                 &self.key,

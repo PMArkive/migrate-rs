@@ -1,5 +1,5 @@
 [package]
-name = "migrate-rs"
+name = "demostf-migrate"
 version = "0.1.0"
 edition = "2021"
 

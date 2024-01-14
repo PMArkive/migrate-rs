@@ -16,7 +16,7 @@ impl Store {
     pub fn new(basedir: impl AsRef<Path>, baseurl: &str) -> Self {
         Store {
             basedir: basedir.as_ref().to_path_buf(),
-            baseurl: baseurl.trim_end_matches("/").to_string(),
+            baseurl: baseurl.trim_end_matches('/').to_string(),
         }
     }
 
@@ -50,7 +50,7 @@ impl Store {
             }
 
             let data = &buff[0..read];
-            hash.consume(&data);
+            hash.consume(data);
         }
 
         Ok(hash.compute().0)
