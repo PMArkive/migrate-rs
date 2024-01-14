@@ -24,7 +24,7 @@ pub enum Error {
 async fn main() -> Result<(), MainError> {
     tracing_subscriber::fmt::init();
 
-    let mut args: HashMap<_, _> = dotenv::vars().collect();
+    let mut args: HashMap<_, _> = dotenvy::vars().collect();
     let store = Store::new(
         args.get("STORAGE_ROOT").expect("no STORAGE_ROOT set"),
         args.get("BASE_URL").expect("no BASE_URL set"),
