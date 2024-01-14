@@ -5,10 +5,10 @@
   ...
 }:
 with lib; let
-  cfg = config.services.demostf-backup;
+  cfg = config.services.demostf-migrate;
 in {
-  options.services.demostf-backup = {
-    enable = mkEnableOption "taspromto";
+  options.services.demostf-migrate = {
+    enable = mkEnableOption "demostf-migrate";
 
     source = mkOption {
       type = types.str;
