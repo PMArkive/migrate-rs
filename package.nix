@@ -7,7 +7,7 @@
   src = sourceByRegex ./. ["Cargo.*" "(src)(/.*)?"];
 in
   rustPlatform.buildRustPackage rec {
-    pname = "taspromto";
+    pname = "demostf-migrate";
     version = "0.1.0";
 
     inherit src;

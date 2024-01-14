@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.services.taspromto;
+  cfg = config.services.demostf-backup;
 in {
-  options.services.taspromto = {
+  options.services.demostf-backup = {
     enable = mkEnableOption "taspromto";
 
     source = mkOption {
