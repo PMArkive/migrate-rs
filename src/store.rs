@@ -31,11 +31,19 @@ impl Store {
     }
 
     pub fn remove(&self, name: &str) -> std::io::Result<()> {
-        fs::remove_file(self.generate_path(name))
+        let path = self.generate_path(name);
+        if path.exists() {
+            fs::remove_file(path)
+        } else {
+            Ok(())
+        }
     }
 
-    pub fn hash(&self, name: &str) -> Result<[u8; 16], Error> {
+    pub fn hash(&self, name: &str) -> Result<Option<[u8; 16]>, Error> {
         let path = self.generate_path(name);
+        if !path.exists() {
+            return Ok(None);
+        }
         let mut file = File::open(path)?;
 
         let mut hash = Context::new();
@@ -53,7 +61,7 @@ impl Store {
             hash.consume(data);
         }
 
-        Ok(hash.compute().0)
+        Ok(Some(hash.compute().0))
     }
 
     pub fn generate_path(&self, name: &str) -> PathBuf {

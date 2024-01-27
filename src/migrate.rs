@@ -64,7 +64,7 @@ impl Migrator {
         let name = demo.url.rsplit('/').next().unwrap();
 
         let stored_hash = self.store.hash(name)?;
-        if stored_hash != demo.hash {
+        if stored_hash != Some(demo.hash) {
             warn!(
                 stored_hash = debug(stored_hash),
                 expected_hash = debug(demo.hash),
@@ -81,7 +81,7 @@ impl Migrator {
                 &self.backend,
                 self.store.generate_path(name).to_str().unwrap(),
                 &self.store.generate_url(name),
-                stored_hash,
+                demo.hash,
                 &self.key,
             )
             .await?;
