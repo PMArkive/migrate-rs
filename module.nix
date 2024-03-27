@@ -6,6 +6,21 @@
 }:
 with lib; let
   cfg = config.services.demostf-migrate;
+  format = pkgs.formats.toml {};
+  configFile = format.generate "demostf-migrate.toml" {
+    api = {
+      url = cfg.source;
+      key_file = "$CREDENTIALS_DIRECTORY/api_key";
+    };
+    storage = {
+      base_url = cfg.baseUrl;
+      root = cfg.storageRoot;
+    };
+    migrate = {
+      to_backend = cfg.backend;
+      age = cfg.age;
+    };
+  };
 in {
   options.services.demostf-migrate = {
     enable = mkEnableOption "demostf-migrate";
@@ -53,6 +68,12 @@ in {
       description = "log level";
     };
 
+    interval = mkOption {
+      type = types.str;
+      default = "*:0/10";
+      description = "how often to run";
+    };
+
     package = mkOption {
       type = types.package;
       defaultText = literalExpression "pkgs.demostf-migrate";
@@ -64,18 +85,15 @@ in {
     systemd.services."demostf-migrate" = {
       wantedBy = ["multi-user.target"];
       environment = {
-        SOURCE = cfg.source;
-        BASE_URL = cfg.baseUrl;
-        STORAGE_ROOT = cfg.storageRoot;
-        BACKEND = cfg.backend;
-        AGE = toString cfg.age;
         RUST_LOG = cfg.log;
       };
 
       serviceConfig = {
-        ExecStart = "${cfg.package}/bin/demostf-migrate";
+        ExecStart = "${cfg.package}/bin/demostf-migrate ${configFile}";
         ReadWritePaths = [cfg.storageRoot];
-        EnvironmentFile = cfg.keyFile;
+        LoadCredential = [
+          "api_key:${cfg.keyFile}"
+        ];
         Restart = "on-failure";
         User = cfg.user;
         PrivateTmp = true;
@@ -108,7 +126,7 @@ in {
       description = "Migrate demos for demos.tf";
       wantedBy = ["multi-user.target"];
       timerConfig = {
-        OnCalendar = "*:0/10";
+        OnCalendar = cfg.interval;
       };
     };
   };

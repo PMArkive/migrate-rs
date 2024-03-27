@@ -1,0 +1,12 @@
+[storage]
+base_url = "https://freezer.demos.tf" # base url of the target demo storage
+root = "/data/demos" # root directory of the target demo storage
+
+[api]
+url = "https://api.demos.tf" # optional, base url of the api
+key_file = "" # file containing the api key
+
+[migrate]
+from_backend = "static" # optional, name of the backend to migrate from
+to_backend = "freezer" # name of the backend to migrate to
+age = 172800; # age of demos in secconds to migrate
