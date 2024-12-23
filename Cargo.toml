@@ -4,16 +4,21 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-thiserror = "1.0.56"
-demostf-client = { version = "0.4.3", default-features = false, features = ["rustls-tls"] }
-tokio = { version = "1.35.1", features = ["rt-multi-thread", "macros"] }
-tracing = "0.1.40"
-tracing-subscriber = "0.3.18"
-futures-util = "0.3.30"
+thiserror = "1.0.69"
+demostf-client = { version = "0.4.4", default-features = false }
+tokio = { version = "1.42.0", features = ["rt-multi-thread", "macros"] }
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
+futures-util = "0.3.31"
 md5 = "0.7.0"
 main_error = "0.1.2"
-time = "0.3.31"
-serde = { version = "1.0.197", features = ["derive"] }
-toml = "0.8.12"
+time = "0.3.37"
+serde = { version = "1.0.216", features = ["derive"] }
+toml = "0.8.19"
 secretfile = "0.1.0"
-clap = { version = "=4.4.18", features = ["derive"] }
+clap = { version = "4.5.23", features = ["derive"] }
+
+[features]
+default = ["default-tls"]
+default-tls = ["demostf-client/default-tls"]
+rustls-tls = ["demostf-client/rustls-tls"]

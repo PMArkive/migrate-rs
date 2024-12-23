@@ -1,6 +1,8 @@
 {
   rustPlatform,
   lib,
+  openssl,
+  pkg-config,
 }: let
   inherit (lib.sources) sourceByRegex;
   inherit (builtins) fromTOML readFile;
@@ -12,6 +14,14 @@ in
     inherit (cargoPackage) version;
 
     inherit src;
+
+    buildInputs = [
+      openssl
+    ];
+
+    nativeBuildInputs = [
+      pkg-config
+    ];
 
     cargoLock = {
       lockFile = ../Cargo.lock;
